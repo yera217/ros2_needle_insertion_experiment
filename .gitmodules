@@ -1,0 +1,3 @@
+[submodule "fbg_interrogator"]
+	path = fbg_interrogator
+	url = https://github.com/dlezcan1/ros2_fbg_interrogator.git
