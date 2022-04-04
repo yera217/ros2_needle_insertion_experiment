@@ -1,3 +1,9 @@
 [submodule "fbg_interrogator"]
 	path = fbg_interrogator
 	url = https://github.com/dlezcan1/ros2_fbg_interrogator.git
+[submodule "needle_insertion_robot"]
+	path = needle_insertion_robot
+	url = https://github.com/dlezcan1/ros2_needle_insertion_robot.git
+[submodule "needle_shape_publisher"]
+	path = needle_shape_publisher
+	url = https://github.com/dlezcan1/ros2_needle_shape_publisher.git
