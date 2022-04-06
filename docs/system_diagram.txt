@@ -1,0 +1,59 @@
+@startuml
+' Nodes
+actor Operator #blue
+
+rectangle "Trajectory Control" {
+  usecase "Estimator"  as Estimator
+  usecase "Controller" as Controller
+}
+
+rectangle "Needle Shape Model" {
+  usecase "Needle Deflection Model Node  \n /needle/ShapeSensingNeedle" as NeedleModel_Deflection
+  usecase "Needle Sensor Processing Node \n /needle/SensorizedNeedle"   as NeedleModel_Sensor
+  usecase "Needle Sensor Hardware Node   \n /needle/HyperionStreamer"   as NeedleModel_SensorHW
+  rectangle "Needle Hardware"{
+    control "sm130 Interrogator"    as HW_Interrogator #red
+    entity  "FBG-Sensorized Needle" as HW_Needle       #red
+  }
+}
+
+rectangle "Needle Insertion Robot" {
+  rectangle "Robot Hardware"{
+    control "Galil Motion Controller" as HW_Galil  #red
+    entity  "Robot"                   as HW_Robot  #red
+  }
+  usecase "ROS 2 Robot Wrapper Node    \n /stage/NeedleInsertionRobotWrapper" as Robot_Wrapper  
+  usecase "Galil Controller Robot Node \n /stage/NeedleInsertionRobot"        as Insertion_Robot
+}
+
+rectangle "System Integration" {
+  usecase "Insertion Point Publisher" as Insertion_Point
+}
+
+' Architecture
+
+' - Robot Interface
+HW_Galil -[#red]-> HW_Robot 
+Insertion_Robot -[#red]-> HW_Galil         : Galil Command \n (DMC Code)
+Insertion_Robot -->       Robot_Wrapper    : /stage/state/axis/(x, y, z, linear_stage) \n std_msgs/msg/Float32
+Robot_Wrapper   -->       Insertion_Robot  : /stage/command/axis/(x, y, z, linear_stage) \n std_msgs/msg/Float32
+Robot_Wrapper   -->       Insertion_Point  : /stage/state/needle_pose \n geometry_msgs/msg/PoseStamped
+
+
+' - Needle Interface
+HW_Needle              -[#red]-> HW_Interrogator        : FBG Spectrum
+HW_Interrogator        -[#red]-> NeedleModel_SensorHW   : FBG Peaks
+Insertion_Point        --->      NeedleModel_Deflection : /subject/state/skin_entry \n geometry_msgs/msg/Point
+NeedleModel_Deflection <--       NeedleModel_Sensor     : /needle/state/curvatures \n std_msgs/msg/Float64MutliArray
+NeedleModel_Sensor     <--       NeedleModel_SensorHW   : /needle/sensor/processed \n std_msgs/msg/Float64MultiArray
+Robot_Wrapper          -->       NeedleModel_Deflection : /stage/state/needle_pose \n geometry_msgs/msg/PoseStamped
+
+' - Estimator Interface
+Estimator --> Controller
+NeedleModel_Deflection --> Estimator : /needle/state/current_shape \n geometry_msgs/msg/PoseArray
+Robot_Wrapper          --> Estimator : /stage/state/needle_pose \n geometry_msgs/msg/PoseStamped
+
+' - Robot Control
+Controller ---> Robot_Wrapper : /move_stage \n stage_control_interfaces/action/MoveStage
+Operator   ---> Robot_Wrapper : /move_stage \n stage_control_interfaces/action/MoveStage
+@enduml
