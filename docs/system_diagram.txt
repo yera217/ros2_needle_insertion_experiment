@@ -43,7 +43,7 @@ Robot_Wrapper   -->       Insertion_Point  : /stage/state/needle_pose \n geometr
 ' - Needle Interface
 HW_Needle              -[#red]-> HW_Interrogator        : FBG Spectrum
 HW_Interrogator        -[#red]-> NeedleModel_SensorHW   : FBG Peaks
-Insertion_Point        --->      NeedleModel_Deflection : /subject/state/skin_entry \n geometry_msgs/msg/Point
+Insertion_Point        --->      NeedleModel_Deflection : /needle/state/skin_entry \n geometry_msgs/msg/Point
 NeedleModel_Deflection <--       NeedleModel_Sensor     : /needle/state/curvatures \n std_msgs/msg/Float64MutliArray
 NeedleModel_Sensor     <--       NeedleModel_SensorHW   : /needle/sensor/processed \n std_msgs/msg/Float64MultiArray
 Robot_Wrapper          -->       NeedleModel_Deflection : /stage/state/needle_pose \n geometry_msgs/msg/PoseStamped
