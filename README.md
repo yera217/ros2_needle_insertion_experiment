@@ -1,6 +1,8 @@
 # Needle Insertion Experiment Setup in ROS 2
 System for ROS 2 needle insertion experiment at JHU for automatic shape-sensing FBG Needle insertion
 
+For System architecture, go to the [System Architecture](docs/index.md) page.
+
 ## Package Contents
 * `sm130_interrogator_cpp`: C++ implementation of sm130 Micron Optics FBG Interrogator (Not in use and not fully implemented)
 * `sm130_interrogator_py`: Python implementatin of sm130 Micron Optics FBG Interrogator (In use and functional)
