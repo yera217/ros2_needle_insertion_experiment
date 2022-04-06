@@ -8,9 +8,9 @@ rectangle "Trajectory Control" {
 }
 
 rectangle "Needle Shape Model" {
-  usecase "Needle Deflection Model Node  \n /needle/ShapeSensingNeedle" as NeedleModel_Deflection
-  usecase "Needle Sensor Processing Node \n /needle/SensorizedNeedle"   as NeedleModel_Sensor
-  usecase "Needle Sensor Hardware Node   \n /needle/HyperionStreamer"   as NeedleModel_SensorHW
+  usecase "Needle Deflection Model Node  \n /needle/ShapeSensingNeedle"  as NeedleModel_Deflection
+  usecase "Needle Sensor Processing Node \n /needle/SensorizedNeedle"    as NeedleModel_Sensor
+  usecase "Needle Sensor Hardware Node   \n /needle/FBGInterrogatorNode" as NeedleModel_SensorHW
   rectangle "Needle Hardware"{
     control "sm130 Interrogator"    as HW_Interrogator #red
     entity  "FBG-Sensorized Needle" as HW_Needle       #red
