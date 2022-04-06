@@ -2,7 +2,7 @@
 
 
 ## System Diagram
-![alternative text](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/SmartNeedle/SystemIntegration/main/Documents/system_diagram.txt)
+![alternative text](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/dlezcan1/ros2_needle_insertion_experiment/main/docs/system_diagram.txt)
 
 ## ROS 2 Messages
 
