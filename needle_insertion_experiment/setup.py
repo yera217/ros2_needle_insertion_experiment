@@ -11,7 +11,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/' + package_name, glob.glob('launch/*.launch.*')),
+        ('share/' + package_name + "/launch/", glob.glob('launch/*.launch.*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
