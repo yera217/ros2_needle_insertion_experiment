@@ -54,6 +54,6 @@ NeedleModel_Deflection --> Estimator : /needle/state/current_shape \n geometry_m
 Robot_Wrapper          --> Estimator : /stage/state/needle_pose \n geometry_msgs/msg/PoseStamped
 
 ' - Robot Control
-Controller ---> Robot_Wrapper : /move_stage \n stage_control_interfaces/action/MoveStage
-Operator   ---> Robot_Wrapper : /move_stage \n stage_control_interfaces/action/MoveStage
+Controller ---> Robot_Wrapper : /stage/move_stage \n needle_insertion_robot_translation_interfaces/action/MoveStage
+Operator   ---> Robot_Wrapper : /stage/move_stage \n needle_insertion_robot_translation_interfaces/action/MoveStage
 @enduml
