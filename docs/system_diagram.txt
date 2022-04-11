@@ -35,8 +35,9 @@ rectangle "System Integration" {
 ' - Robot Interface
 HW_Galil -[#red]-> HW_Robot 
 Insertion_Robot -[#red]-> HW_Galil         : Galil Command \n (DMC Code)
-Insertion_Robot -->       Robot_Wrapper    : /stage/position/axis/(x, y, z, linear_stage) \n std_msgs/msg/Float32
-Robot_Wrapper   -->       Insertion_Robot  : /stage/command/axis/(x, y, z, linear_stage) \n std_msgs/msg/Float32
+Insertion_Robot -->       Robot_Wrapper    : /stage/axis/position/(x, y, z, linear_stage) \n std_msgs/msg/Float32
+Insertion_Robot -->       Robot_Wrapper    : /stage/axis/state/moving/(x, y, z, linear_stage) \n std_msgs/msg/Bool
+Robot_Wrapper   -->       Insertion_Robot  : /stage/axis/command/(x, y, z, linear_stage) \n std_msgs/msg/Float32
 Robot_Wrapper   -->       Insertion_Point  : /stage/state/needle_pose \n geometry_msgs/msg/PoseStamped
 
 
