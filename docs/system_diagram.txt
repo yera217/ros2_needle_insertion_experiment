@@ -22,8 +22,8 @@ rectangle "Needle Insertion Robot" {
     control "Galil Motion Controller" as HW_Galil  #red
     entity  "Robot"                   as HW_Robot  #red
   }
-  usecase "ROS 2 Robot Wrapper Node    \n /stage/NeedleInsertionRobotWrapper" as Robot_Wrapper  
-  usecase "Galil Controller Robot Node \n /stage/NeedleInsertionRobot"        as Insertion_Robot
+  usecase "ROS 2 Robot Translation Nodes \n /stage/NeedleInsertionRobotActionServerNode \n /stage/NeedleInsertionRobotTranslationNode" as Robot_Wrapper  
+  usecase "Galil Controller Robot Node   \n /stage/NeedleInsertionRobot"                                                               as Insertion_Robot
 }
 
 rectangle "System Integration" {
