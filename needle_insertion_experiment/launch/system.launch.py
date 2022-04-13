@@ -1,4 +1,3 @@
-from click import launch
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
@@ -52,9 +51,15 @@ def generate_launch_description():
         default_value="192.168.1.201",
         description="Robot: IP Address of Galil Controller"
     )
+    arg_robot_ns = DeclareLaunchArgument(
+        'robot_ns',
+        default_value='stage',
+        description="Robot: ROS Namespace for needle insertion robot"
+    )
     
 
     # launch files
+    # - needle shape-sensing
     launch_needle = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution([
@@ -70,14 +75,16 @@ def generate_launch_description():
         }.items(),
     )
 
+    # - needle insertion robot
     launch_robot = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution([
-                pkg_insertion_robot, 'launch', 'robot.launch.py'
+                pkg_system_integration, 'launch', 'stage.launch.py'
             ])
         ),
         launch_arguments={
             'ip': LaunchConfiguration('robot_ipAddress'),
+            'ns': LaunchConfiguration('robot_ns'),
         }.items(),
     )
 
@@ -91,6 +98,7 @@ def generate_launch_description():
     ld.add_action( arg_interrogator_ip )
 
     ld.add_action( arg_robot_ip )
+    ld.add_action( arg_robot_ns )
 
     # - launch files
     ld.add_action( launch_needle )
