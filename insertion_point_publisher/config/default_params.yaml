@@ -1,0 +1,10 @@
+/**:
+  InsertionPointPublisher:
+    ros__parameters:
+      insertion:
+        point:
+          x: 0.0
+          y: 0.0
+          z: 0.0
+          publish:
+            time: 0.1

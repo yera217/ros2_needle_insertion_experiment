@@ -15,11 +15,11 @@ def generate_launch_description():
     # arguments
     # - needle args
     arg_needle_sim = DeclareLaunchArgument(
-        'sim_level_needle_sensing', 
+        'sim_level_needle_sensing',
         default_value='1',
         description="Simulation level: 1 - demo needle sensors, 2 - real needle sensors."
         )
-    
+
     arg_needle_numsignals = DeclareLaunchArgument(
         'needle_numSignals',
         default_value='200',
@@ -44,7 +44,7 @@ def generate_launch_description():
         default_value="192.168.1.11",
         description="Interrogator: IP address of FBG interrogator"
     )
-    
+
     # - robot
     arg_robot_ip = DeclareLaunchArgument(
         'robot_ipAddress',
@@ -56,7 +56,7 @@ def generate_launch_description():
         default_value='stage',
         description="Robot: ROS Namespace for needle insertion robot"
     )
-    
+
 
     # launch files
     # - needle shape-sensing
@@ -70,7 +70,7 @@ def generate_launch_description():
             'sim_level_needle_sensing': LaunchConfiguration( 'sim_level_needle_sensing' ),
             'needleParamFile'         : LaunchConfiguration( 'needle_needleParamFile' ),
             'numSignals'              : LaunchConfiguration( 'needle_numSignals' ),
-            'optimMaxIterations'      : LaunchConfiguration( 'needle_optimMaxIterations' ),  
+            'optimMaxIterations'      : LaunchConfiguration( 'needle_optimMaxIterations' ),
             'interrogatorIP'          : LaunchConfiguration( 'interrogator_ipAddress' ),
         }.items(),
     )
@@ -88,6 +88,18 @@ def generate_launch_description():
         }.items(),
     )
 
+    # - needle insertion publisher
+    launch_insertionpoint = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                PathJoinSubstitution([
+                    pkg_insertion_point, 'launch', 'insertion_point_publisher.launch.py'
+                ])
+            ),
+            launch_arguments={
+                'ns': 'needle',
+            }.items(),
+            )
+
     # launch description setup
     # - arguments
     ld.add_action( arg_needle_sim )
@@ -103,6 +115,7 @@ def generate_launch_description():
     # - launch files
     ld.add_action( launch_needle )
     ld.add_action( launch_robot )
+    ld.add_action( launch_insertionpoint )
 
 
     return ld
