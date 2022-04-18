@@ -38,6 +38,10 @@ class InsertionPointPublisher( Node ):
         self.timer_publish_inspoint = self.create_timer(
                 publish_time, self.publish_insertion_point )
 
+        # logging
+        self.get_logger().info( "Running insertion point publisher for: "
+                               f"({self.insertion_x}, {self.insertion_y}, {self.insertion_z})" )
+
     # __init__
 
     def destroy_node( self ):
@@ -52,7 +56,7 @@ class InsertionPointPublisher( Node ):
     # publish_insertion_point
 
     def set_parameter_callback( self, params ):
-        """ Set parameter callback to update parameters """
+        """ Set parameter callback to update insertion point parameters """
         success = False
 
         # iterate through parameters
@@ -71,6 +75,12 @@ class InsertionPointPublisher( Node ):
                 success = False
 
         # for
+
+        # log the new insertion point
+        if success:
+            self.get_logger().info( "Updated needle insertion point to: "
+                                    f"({self.insertion_x}, {self.insertion_y}, {self.insertion_z})" )
+        # if
 
         return SetParametersResult( successful=success )
 
