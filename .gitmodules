@@ -7,3 +7,6 @@
 [submodule "needle_shape_publisher"]
 	path = needle_shape_publisher
 	url = https://github.com/dlezcan1/ros2_needle_shape_publisher.git
+[submodule "stereo_camera_needle"]
+	path = stereo_camera_needle
+	url = https://github.com/dlezcan1/ros2_stereo_camera_needle.git
