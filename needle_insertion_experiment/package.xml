@@ -4,8 +4,14 @@
   <name>needle_insertion_experiment</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="amiro@todo.todo">amiro</maintainer>
+  <maintainer email="dlezcan1@jhu.edu">Dimitri Lezcano</maintainer>
   <license>TODO: License declaration</license>
+
+  <exec_depend>needle_shape_publisher</exec_depend>
+  <exec_depend>needle_insertion_robot</exec_depend>
+  <exec_depend>needle_shape_publisher</exec_depend>
+  <exec_depend>insertion_point_publisher</exec_depend>
+  <exec_depend>pgr_stereo_camera</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

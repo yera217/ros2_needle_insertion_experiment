@@ -4,10 +4,13 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 from launch_ros.substitutions import FindPackageShare
+import launch_yaml
 
-pkg_system_integration     = FindPackageShare('needle_insertion_experiment')
-pkg_needle_shape_publisher = FindPackageShare('needle_shape_publisher')
-pkg_insertion_robot        = FindPackageShare('needle_insertion_robot')
+pkg_system_integration     = FindPackageShare( 'needle_insertion_experiment' )
+pkg_needle_shape_publisher = FindPackageShare( 'needle_shape_publisher' )
+pkg_insertion_robot        = FindPackageShare( 'needle_insertion_robot' )
+pkg_insertion_point        = FindPackageShare( 'insertion_point_publisher' )
+pkg_stereo_camera          = FindPackageShare( 'pkg_stereo_camera' )
 
 def generate_launch_description():
     ld = LaunchDescription()
@@ -57,6 +60,25 @@ def generate_launch_description():
         description="Robot: ROS Namespace for needle insertion robot"
     )
 
+    # - camera
+    arg_camera_ns = DeclareLaunchArgument(
+        'camera_ns',
+        default_value='camera',
+        description="Camera: ROS namespace for stereo camera setup"
+    )
+    arg_camera_sync = DeclareLaunchArgument(
+        'camera_syncStereo',
+        default_value='true', 
+        choices=['true', 'false'],
+        description="Camera: Whether to publish synchronized stereo iamge pairs"
+    )
+    arg_camera_imgproc = DeclareLaunchArgument(
+        'camera_useImageProc',
+        default_value='true',
+        choices=['true', 'false'],
+        description="Camera: Whether to use image processing ROS publishing for image rectification or not."
+    )
+
 
     # launch files
     # - needle shape-sensing
@@ -100,6 +122,19 @@ def generate_launch_description():
             }.items(),
             )
 
+    launch_stereocamera = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            PathJoinSubstitution([
+                pkg_stereo_camera, 'launch', 'stereo_camera.launch.py'
+            ]),
+            launch_arguments={
+                'ns'          : LaunchConfiguration('camera_ns'),
+                'syncStereo'  : LaunchConfiguration('camera_syncStereo'),
+                'useImageProc': LaunchConfiguration('camera_useImageProc'),
+            }.items(),
+        )
+    )
+
     # launch description setup
     # - arguments
     ld.add_action( arg_needle_sim )
@@ -112,10 +147,15 @@ def generate_launch_description():
     ld.add_action( arg_robot_ip )
     ld.add_action( arg_robot_ns )
 
+    ld.add_action( arg_camera_ns )
+    ld.add_action( arg_camera_sync )
+    ld.add_action( arg_camera_imgproc )
+
     # - launch files
     ld.add_action( launch_needle )
     ld.add_action( launch_robot )
     ld.add_action( launch_insertionpoint )
+    ld.add_action( launch_stereocamera )
 
 
     return ld
