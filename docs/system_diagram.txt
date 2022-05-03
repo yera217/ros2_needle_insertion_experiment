@@ -30,6 +30,19 @@ rectangle "System Integration" {
   usecase "Insertion Point Publisher" as Insertion_Point
 }
 
+rectangle "Visualization" {
+  rectangle "Stereo Camera System"{
+    usecase "ROS 2 Left Camera" as Stereo_Camera_Left
+    usecase "ROS 2 Right Camera" as Stereo_Camera_Right
+    rectangle "Camera Hardware" {
+       entity "Left Point Grey Camera" as Camera_Left_HW #red
+       entity "Right Point Grey Camera" as Camera_Right_HW #red
+    }
+    usecase "ROS Image Processing (Left)" as Image_Proc_Left
+    usecase "ROS Image Processing (Right)" as Image_Proc_Right
+  }
+}
+
 ' Architecture
 
 ' - Robot Interface
@@ -57,4 +70,13 @@ Robot_Wrapper          --> Estimator : /stage/state/needle_pose \n geometry_msgs
 ' - Robot Control
 Controller ---> Robot_Wrapper : /stage/move_stage \n needle_insertion_robot_translation_interfaces/action/MoveStage
 Operator   ---> Robot_Wrapper : /stage/move_stage \n needle_insertion_robot_translation_interfaces/action/MoveStage
+
+' - Stereo System
+Camera_Left_HW -[#red]-> Stereo_Camera_Left   : Raw Image
+Camera_Right_HW -[#red]-> Stereo_Camera_Right : Raw Image
+Stereo_Camera_Left ---> Image_Proc_Left       : /camera/left/image_rsw \n sensor_msgs/msg/Image 
+Stereo_Camera_Left ---> Image_Proc_Left       : /camera/left/camera_info \n sensor_msgs/msg/CameraInfo 
+Stereo_Camera_Right ---> Image_Proc_Right     : /camera/right/image_raw \n sensor_msgs/msg/Image
+Stereo_Camera_Right ---> Image_Proc_Right     : /camera/right/camera_info \n sensor_msgs/msg/CameraInfo 
+
 @enduml
