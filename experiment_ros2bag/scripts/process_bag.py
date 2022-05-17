@@ -29,14 +29,21 @@ def main( args=None ):
         print(f"    {topic:50s}: {msg_t:30s}")
     
     print("Messages for axis stage Position commands:")
-    ax_pos = bag.get_messages(topic_name = ["/stage/axis/position/x", "/stage/axis/position/y"])
+    ax_pos_topics = [f"/stage/axis/position/{axis}" for axis in ["x", "y", "z", "linear_stage"]]
+    ax_pos = bag.get_messages(topic_name = ax_pos_topics, generator_count=len(ax_pos_topics))
 
     idx = 0
     while idx < 5:
-        print(next(ax_pos))
+        msgs = next(ax_pos)
+        for msg in msgs:
+            print(f"  {msg}")
+        print(100*"=")
         idx+=1
 
     # while
+
+    print("Testing parsing data")
+    bag.parse_data(robot=True)
     
     
 # main

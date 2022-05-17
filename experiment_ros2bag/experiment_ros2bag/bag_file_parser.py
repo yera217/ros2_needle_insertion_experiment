@@ -29,7 +29,7 @@ class BagFileParser:
         topics_data = self.cursor.execute( "SELECT id, name, type FROM topics" ).fetchall()
         self.topic_type = { name_of: type_of for id_of, name_of, type_of in topics_data }
         self.topic_id = { name_of: id_of for id_of, name_of, type_of in topics_data }
-        self.id_topic = { id_of: name_of for id_of, name_of, type_of in topics_data }
+        self.topic_name = { id_of: name_of for id_of, name_of, type_of in topics_data }
         self.topic_msg = { name_of: get_message( type_of ) for id_of, name_of, type_of in topics_data }
 
     # __init__
@@ -39,15 +39,15 @@ class BagFileParser:
 
     # __del__
 
-    def get_messages( self, topic_name = None, ts_range: tuple = (None, None), ts_range_exclude: tuple = (None, None) ):
+    def get_messages( self, topic_name = None, ts_range: tuple = (None, None), ts_range_exclude: tuple = (None, None), generator_count: int = -1):
         """
             Get all of the messages from the topic
-            :param topic_name: string of the topic name to get
+            :param topic_name: string or list of strings of the topic name(s) to get
+            :param ts_range: tuple of timestamps (Default = (None, None)) to include
+            :param ts_range_exclude: tuple of timestamps (Default = (None, None))
             :return: list of tuples(timestamp, message)
 
         """
-        
-
         # Get from the db
         sql_cmd ="SELECT timestamp, topic_id, data FROM messages"
         conditions = []
@@ -58,14 +58,14 @@ class BagFileParser:
                 topic_id = self.topic_id[ topic_name ]
                 conditions.append( f"topic_id = {topic_id}" )
 
-            elif isinstance(topic_name, list):
+            elif isinstance(topic_name, list) and len(topic_name) > 0:
                 topic_condition = " OR ".join([ f"topic_id = {self.topic_id[name]}" for name in topic_name])
                 conditions.append( f"( {topic_condition} )" )
 
                 # for
             # elif
             else:
-                raise ValueError("'topic_name' must be a str or List[str].")
+                raise ValueError("'topic_name' must be a str or a non-empty List[str].")
 
         # if
 
@@ -91,17 +91,39 @@ class BagFileParser:
 
         # combine conditions
         if len(conditions) > 0:
-            sql_cmd += " WHERE " + " AND ".join(conditions)
+            sql_cmd += " WHERE " + " AND ".join(conditions) + " ORDER BY timestamp ASC"
 
         rows = self.cursor.execute( sql_cmd )
 
         # Deserialise all and timestamp them
-        while True:
-            ts, id, msg_srl = rows.fetchone()
-            yield (ts, self.id_topic[id], deserialize_message(msg_srl, self.topic_msg[self.id_topic[id]]))
-        
+        if generator_count > 0:
+            while True:
+                yield [(ts, self.topic_name[id], self.deserialize_message(msg_srl, topic_id=id)) for ts, id, msg_srl 
+                        in rows.fetchmany(generator_count)]
+            # while
+        # if
+        else: # get all
+            return [(ts, self.topic_name[id], self.deserialize_message(msg_srl, topic_id=id)) for ts, id, msg_srl
+                     in rows.fetchall()]
 
+        # else
     # get_messages
+
+    def deserialize_message(self, msg, topic_name = None, topic_id = None):
+        """ Deserialize the message """
+        if topic_name is not None:
+            topic_msg = self.topic_msg[topic_name]
+
+        elif topic_id is not None:
+            topic_msg = self.topic_msg[self.topic_name[topic_id]]
+
+        else: 
+            raise ValueError("'either topic_name' or 'topic_id' must be provided.")
+
+        return deserialize_message(msg, topic_msg)
+
+    # deserialze_message
+
 
 
 # class: BagFileParser
