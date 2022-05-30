@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+
+<robot name="insertion_robot">
+
+  <!--link for robot base-->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.2 0.15 0.05"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!--joint between robot base and X-axis-->
+  <joint name="base_to_x_axis_joint" type="translational">
+    <parent link="base_link"/>
+    <child link="x_axis_link"/>
+    <axis xyz="1 0 0" />
+  </joint>
+
+  <!--link for X-axis-->
+  <link name="x_axis_link">
+    <visual>
+      <geometry>
+        <box size="0.6 0.1 0.2"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!--joint between X-axis and Y-axis-->
+  <joint name="x_axis_to_y_axis_joint" type="translational">
+    <parent link="x_axis_link"/>
+    <child link="y_axis_link"/>
+    <axis xyz="0 1 0" />
+  </joint>
+
+  <!--link for Y-axis-->
+  <link name="y_axis_link">
+    <visual>
+      <geometry>
+        <box size="0.6 0.1 0.2"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!--joint between Y-axis and Z-axis-->
+  <joint name="y_axis_to_z_axis_joint" type="translational">
+    <parent link="y_axis_link"/>
+    <child link="z_axis_link"/>
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <!--link for Z-axis-->
+  <link name="z_axis_link">
+    <visual>
+      <geometry>
+        <box size="0.6 0.1 0.2"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!--joint between Z-axis and Linear Stage-->
+  <joint name="z_axis_to_linear_stage_joint" type="translational">
+    <parent link="z_axis_link"/>
+    <child link="linear_stage_link"/>
+    <axis xyz="1 0 0" />
+  </joint>
+
+  <!--link for Linear Stage-->
+  <link name="linear_stage_link">
+    <visual>
+      <geometry>
+        <box size="0.6 0.1 0.2"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!--joint between Linear Stage and Needle base-->
+  <joint name="linear_stage_to_needle_base_joint" type="fixed">
+    <parent link="linear_stage_link"/>
+    <child link="needle_base_link"/>
+  </joint>
+
+  <!--link for Needle base/hub-->
+  <link name="needle_base_link">
+    <visual>
+      <geometry>
+        <box size="0.6 0.1 0.2"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!--joint between Needle base and Sensorized Needle-->
+  <joint name="needle_base_to_needle_joint" type="rotational">
+    <parent link="needle_base_link"/>
+    <child link="needle_link"/>
+    <axis xyz="1 0 0" />
+  </joint>
+
+  <!--link for Needle-->
+  <link name="needle_link">
+    <visual>
+      <geometry>
+        <box size="0.6 0.1 0.2"/>
+      </geometry>
+    </visual>
+  </link>
+
+
+</robot>
