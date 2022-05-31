@@ -1,7 +1,14 @@
 <?xml version="1.0"?>
 
 <robot name="insertion_robot">
+  <link name="world" />
 
+  <!--joint between Linear Stage and Needle base-->
+  <joint name="base_fixed_joint" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+  </joint>
+  
   <!--link for robot base-->
   <link name="base_link">
     <visual>
@@ -12,9 +19,10 @@
   </link>
 
   <!--joint between robot base and X-axis-->
-  <joint name="base_to_x_axis_joint" type="translational">
+  <joint name="base_to_x_axis_joint" type="prismatic">
     <parent link="base_link"/>
     <child link="x_axis_link"/>
+    <limit effort="1000.0" lower="-1" upper="1" velocity="0.5"/>
     <axis xyz="1 0 0" />
   </joint>
 
@@ -28,9 +36,10 @@
   </link>
 
   <!--joint between X-axis and Y-axis-->
-  <joint name="x_axis_to_y_axis_joint" type="translational">
+  <joint name="x_axis_to_y_axis_joint" type="prismatic">
     <parent link="x_axis_link"/>
     <child link="y_axis_link"/>
+    <limit effort="1000.0" lower="-1" upper="1" velocity="0.5"/>
     <axis xyz="0 1 0" />
   </joint>
 
@@ -44,9 +53,10 @@
   </link>
 
   <!--joint between Y-axis and Z-axis-->
-  <joint name="y_axis_to_z_axis_joint" type="translational">
+  <joint name="y_axis_to_z_axis_joint" type="prismatic">
     <parent link="y_axis_link"/>
     <child link="z_axis_link"/>
+    <limit effort="1000.0" lower="-1" upper="1" velocity="0.5"/>
     <axis xyz="0 0 1" />
   </joint>
 
@@ -60,9 +70,10 @@
   </link>
 
   <!--joint between Z-axis and Linear Stage-->
-  <joint name="z_axis_to_linear_stage_joint" type="translational">
+  <joint name="z_axis_to_linear_stage_joint" type="prismatic">
     <parent link="z_axis_link"/>
     <child link="linear_stage_link"/>
+    <limit effort="1000.0" lower="-1" upper="1" velocity="0.5"/>
     <axis xyz="1 0 0" />
   </joint>
 
@@ -91,9 +102,10 @@
   </link>
 
   <!--joint between Needle base and Sensorized Needle-->
-  <joint name="needle_base_to_needle_joint" type="rotational">
+  <joint name="needle_base_to_needle_joint" type="revolute">
     <parent link="needle_base_link"/>
     <child link="needle_link"/>
+    <limit effort="1000.0" lower="-1.57079" upper="1.57079" velocity="0.5"/>
     <axis xyz="1 0 0" />
   </joint>
 
