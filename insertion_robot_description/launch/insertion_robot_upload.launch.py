@@ -1,44 +1,13 @@
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
+# from launch.actions import DeclareLaunchArgument
+# from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
 
 def generate_launch_description():
-    # declared_arguments = []
-    # # General arguments
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         "description_package",
-    #         default_value="insertion_robot_description",
-    #         description="Description package with robot URDF/XACRO files.",
-    #     )
-    # )
-    # declared_arguments.append(
-    #     DeclareLaunchArgument(
-    #         "description_file",
-    #         default_value="insertion_robot.urdf",
-    #         description="URDF/XACRO description file with the robot.",
-    #     )
-    # )
 
-    # # General arguments
-    # description_package = LaunchConfiguration("description_package")
-    # description_file = LaunchConfiguration("description_file")
-
-
-
-
-    # robot_description_content = Command(
-    #     [
-    #         # PathJoinSubstitution([FindExecutable(name="xacro")]),
-    #         # " ",
-    #         PathJoinSubstitution([FindPackageShare(description_package), "urdf", description_file]),
-    #     ]
-    # )
-    #robot_description = {"robot_description": robot_description_content}
     urdf = os.path.join(
         get_package_share_directory("insertion_robot_description"),
         "urdf", "insertion_robot.urdf")

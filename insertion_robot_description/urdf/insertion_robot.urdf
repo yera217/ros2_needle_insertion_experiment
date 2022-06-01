@@ -119,4 +119,49 @@
   </link>
 
 
+  <!-- Transmissions for ros_control of Gazebo simulated robot -->
+  <transmission name="trans_x_axis">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="base_to_x_axis_joint">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="x_axis_motor">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="trans_y_axis">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="x_axis_to_y_axis_joint">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="y_axis_motor">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="trans_z_axis">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="y_axis_to_z_axis_joint">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="z_axis_motor">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="trans_ls_axis">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="z_axis_to_linear_stage_joint">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="ls_axis_motor">
+      <hardwareInterface>PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  
 </robot>
