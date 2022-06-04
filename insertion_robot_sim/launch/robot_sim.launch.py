@@ -53,11 +53,18 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(os.path.join(pkg_gazebo_ros, 'launch', 'gzclient.launch.py')),
         # condition=IfCondition(PythonExpression([use_simulator, ' and not ', headless]))
     )
+
+    spawn_entity = Node(package='gazebo_ros', executable='spawn_entity.py',
+                        arguments=['-topic', 'robot_description',
+                                   '-entity', 'insertionRobot'],
+                        output='screen')
+
     nodes_to_start = [
+        upload_robot_description,
         robot_sim_node,
         start_gazebo_server_cmd,
         start_gazebo_client_cmd,
-        upload_robot_description
+        spawn_entity,
     ]
     
     ld = LaunchDescription(nodes_to_start)
