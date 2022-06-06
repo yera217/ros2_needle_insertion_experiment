@@ -33,7 +33,7 @@ if(BUILD_TESTING)
 endif()
 
 # launch files
-install(DIRECTORY launch urdf
+install(DIRECTORY launch urdf controller
   DESTINATION share/${PROJECT_NAME})
 
 ament_package()

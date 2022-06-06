@@ -1,7 +1,8 @@
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument,IncludeLaunchDescription
+from launch.actions import ExecuteProcess, IncludeLaunchDescription, RegisterEventHandler
 from launch.conditions import IfCondition
+from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
@@ -60,11 +61,17 @@ def generate_launch_description():
                         output='screen')
 
     nodes_to_start = [
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=spawn_entity,
+                on_exit=[upload_robot_description],
+            )
+        ),
         upload_robot_description,
         robot_sim_node,
         start_gazebo_server_cmd,
         start_gazebo_client_cmd,
-        spawn_entity,
+        
     ]
     
     ld = LaunchDescription(nodes_to_start)

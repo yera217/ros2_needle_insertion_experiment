@@ -1,0 +1,34 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    joint_trajectory_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+      joints:
+      - base_to_x_axis_joint
+      - x_axis_to_y_axis_joint
+      - y_axis_to_z_axis_joint
+      - z_axis_to_linear_stage_joint
+    joint_state_controller:
+      type: joint_state_controller/JointStateController
+      joints:
+      - base_to_x_axis_joint
+      - x_axis_to_y_axis_joint
+      - y_axis_to_z_axis_joint
+      - z_axis_to_linear_stage_joint
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+# joint_trajectory_controller:
+#   ros__parameters:
+#     joints:
+#       - base_to_x_axis_joint
+#       - x_axis_to_y_axis_joint
+#       - y_axis_to_z_axis_joint
+#       - z_axis_to_linear_stage_joint
+#     interface_name: position
+#     command_interfaces:
+#       - position
+#     state_interfaces:
+#       - position
+#       - velocity

@@ -1,7 +1,5 @@
 <?xml version="1.0"?>
 
-
-
 <robot name="insertion_robot">
   <link name="world" />
 
@@ -27,7 +25,7 @@
     </collision>
     <inertial>
       <origin xyz="0 0 0"/>
-      <mass value="10"/>
+      <mass value="1"/>
       <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
     </inertial>
   </link>
@@ -56,7 +54,7 @@
     </collision>
     <inertial>
       <origin xyz="0 0 1"/>
-      <mass value="10"/>
+      <mass value="1"/>
       <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
     </inertial>
   </link>
@@ -85,7 +83,7 @@
     </collision>
     <inertial>
       <origin xyz="0 0 2"/>
-      <mass value="10"/>
+      <mass value="1"/>
       <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
     </inertial>
   </link>
@@ -113,7 +111,7 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="10"/>
+      <mass value="1"/>
       <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
     </inertial>
   </link>
@@ -142,7 +140,7 @@
     </collision>
     <inertial>
       <origin xyz="1 0 3"/>
-      <mass value="10"/>
+      <mass value="1"/>
       <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
     </inertial>
   </link>
@@ -169,7 +167,7 @@
     </collision>
     <inertial>
       <origin xyz="2 0 3"/>
-      <mass value="10"/>
+      <mass value="1"/>
       <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
     </inertial>
   </link>
@@ -198,60 +196,69 @@
     </collision>
     <inertial>
       <origin xyz="3 0 3"/>
-      <mass value="10"/>
+      <mass value="1"/>
       <inertia ixx="0.4" ixy="0.0" ixz="0.0" iyy="0.4" iyz="0.0" izz="0.2"/>
     </inertial>
   </link>
 
 
-  <!-- Transmissions for ros_control of Gazebo simulated robot -->
-  <transmission name="trans_x_axis">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="base_to_x_axis_joint">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="x_axis_motor">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-
-  <transmission name="trans_y_axis">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="x_axis_to_y_axis_joint">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="y_axis_motor">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-
-  <transmission name="trans_z_axis">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="y_axis_to_z_axis_joint">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="z_axis_motor">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-
-  <transmission name="trans_ls_axis">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="z_axis_to_linear_stage_joint">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="ls_axis_motor">
-      <hardwareInterface>PositionJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
   
+  <ros2_control name="GazeboSystem" type="system">
+    <hardware>
+      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+    </hardware>
+    <joint name="base_to_x_axis_joint">
+      <command_interface name="position">
+        <param name="min">-100</param>
+        <param name="max">100</param>
+      </command_interface>
+      <state_interface name="position">
+        <param name="initial_value">1.0</param>
+      </state_interface>
+      <state_interface name="velocity"/>
+      <!-- <state_interface name="effort"/> -->
+    </joint>
+    <joint name="x_axis_to_y_axis_joint">
+      <command_interface name="position">
+        <param name="min">-100</param>
+        <param name="max">100</param>
+      </command_interface>
+      <state_interface name="position">
+        <param name="initial_value">1.0</param>
+      </state_interface>
+      <state_interface name="velocity"/>
+      <!-- <state_interface name="effort"/> -->
+    </joint>
+    <joint name="y_axis_to_z_axis_joint">
+      <command_interface name="position">
+        <param name="min">-100</param>
+        <param name="max">100</param>
+      </command_interface>
+      <state_interface name="position">
+        <param name="initial_value">1.0</param>
+      </state_interface>
+      <state_interface name="velocity"/>
+      <!-- <state_interface name="effort"/> -->
+    </joint>
+    <joint name="z_axis_to_linear_stage_joint">
+      <command_interface name="position">
+        <param name="min">-100</param>
+        <param name="max">100</param>
+      </command_interface>
+      <state_interface name="position">
+        <param name="initial_value">1.0</param>
+      </state_interface>
+      <state_interface name="velocity"/>
+      <!-- <state_interface name="effort"/> -->
+    </joint>
+  </ros2_control>
+
 <gazebo>
-  <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-    <robotNamespace>/insertion_robot</robotNamespace>
+  <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+    <robotNamespace></robotNamespace>
+    <robot_param>robot_description</robot_param>
+    <robot_param_node>robot_state_publisher</robot_param_node>
+    <parameters>$(find insertion_robot_description)/controller/insertion_robot_controller.yaml</parameters>
   </plugin>
 </gazebo>
 
