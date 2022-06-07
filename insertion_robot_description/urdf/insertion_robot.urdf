@@ -205,7 +205,8 @@
   
   <ros2_control name="GazeboSystem" type="system">
     <hardware>
-      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+      <!-- <plugin>gazebo_ros2_control/GazeboSystem</plugin> -->
+      <plugin>fake_components/GenericSystem</plugin>
     </hardware>
     <joint name="base_to_x_axis_joint">
       <command_interface name="position">

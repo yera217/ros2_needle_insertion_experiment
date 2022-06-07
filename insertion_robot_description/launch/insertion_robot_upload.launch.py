@@ -18,13 +18,14 @@ def generate_launch_description():
         "urdf", "insertion_robot.urdf")
     with open(urdf, 'r') as infp:
         robot_description = infp.read()
+    robot_description = {"robot_description": robot_description}
 
 
     robot_controllers = PathJoinSubstitution(
         [
             FindPackageShare('insertion_robot_description'),
             "controller",
-            'insertion_robot_upload.yaml',
+            'insertion_robot_controller.yaml',
         ]
     )
 
@@ -32,11 +33,11 @@ def generate_launch_description():
     # rviz_config_file = PathJoinSubstitution(
     #     [FindPackageShare(description_package), "rviz", "view_robot.rviz"]
     # )
-    joint_state_publisher_node = Node(
-        package="joint_state_publisher",
-        executable="joint_state_publisher",
-        arguments=[urdf],
-    )
+    # joint_state_publisher_node = Node(
+    #     package="joint_state_publisher",
+    #     executable="joint_state_publisher",
+    #     arguments=[urdf],
+    # )
     # joint_state_publisher_gui_node = Node(
     #     package="joint_state_publisher_gui",
     #     executable="joint_state_publisher_gui",
@@ -44,7 +45,7 @@ def generate_launch_description():
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
-        output="both",
+        output="screen",
         parameters=[robot_description],
         arguments=[urdf],
     )
@@ -71,22 +72,29 @@ def generate_launch_description():
         package="controller_manager",
         executable="ros2_control_node",
         parameters=[robot_description, robot_controllers],
+        arguments=[urdf],
         output={
             "stdout": "screen",
             "stderr": "screen",
         },
     )
 
+    # joint_state_broadcaster_spawner = Node(
+    #     package="controller_manager",
+    #     executable="spawner.py",
+    #     arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+    # )
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner.py",
-        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+        arguments=["joint_state_broadcaster"],
+        output="screen",
     )
 
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner.py",
-        arguments=['joint_trajectory_controller', "-c", "/controller_manager"],
+        arguments=['joint_trajectory_controller'],
     )
 
 
@@ -98,17 +106,18 @@ def generate_launch_description():
         #         on_exit=[load_joint_trajectory_controller],
         #     )
         # ),
-        RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=control_node,
-                on_exit=[robot_state_publisher_node],
-            )
-        ),
-        joint_state_publisher_node,
-        # robot_state_publisher_node,
-        rviz_node,
+        # RegisterEventHandler(
+        #     event_handler=OnProcessExit(
+        #         target_action=robot_state_publisher_node,
+        #         on_exit=[control_node],
+        #     )
+        # ),
+        # joint_state_publisher_node,
+        robot_state_publisher_node,
+        # rviz_node,
         control_node,
         # load_joint_trajectory_controller,
+        
         joint_state_broadcaster_spawner,
         robot_controller_spawner,
     ]
