@@ -12,9 +12,10 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
+    package_name="insertion_robot_description"
 
     urdf = os.path.join(
-        get_package_share_directory("insertion_robot_description"),
+        get_package_share_directory(package_name),
         "urdf", "insertion_robot.urdf")
     with open(urdf, 'r') as infp:
         robot_description = infp.read()
@@ -23,21 +24,22 @@ def generate_launch_description():
 
     robot_controllers = PathJoinSubstitution(
         [
-            FindPackageShare('insertion_robot_description'),
+            FindPackageShare(package_name),
             "controller",
             'insertion_robot_controller.yaml',
         ]
     )
+    rviz_config_file = PathJoinSubstitution(
+        [FindPackageShare(package_name), "worlds", "insertion_robot.rviz"]
+    )
 
 
-    # rviz_config_file = PathJoinSubstitution(
-    #     [FindPackageShare(description_package), "rviz", "view_robot.rviz"]
-    # )
-    # joint_state_publisher_node = Node(
-    #     package="joint_state_publisher",
-    #     executable="joint_state_publisher",
-    #     arguments=[urdf],
-    # )
+
+    joint_state_publisher_node = Node(
+        package="joint_state_publisher",
+        executable="joint_state_publisher",
+        arguments=[urdf],
+    )
     # joint_state_publisher_gui_node = Node(
     #     package="joint_state_publisher_gui",
     #     executable="joint_state_publisher_gui",
@@ -54,18 +56,8 @@ def generate_launch_description():
         executable="rviz2",
         name="rviz2",
         output="log",
-        # arguments=["-d", rviz_config_file],
+        arguments=["-d", rviz_config_file],
     )
-
-    # load_joint_state_controller = ExecuteProcess(
-    #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'start',
-    #          'joint_state_broadcaster'],
-    #     output='screen'
-    # )
-    # load_joint_trajectory_controller = ExecuteProcess(
-    #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'start', 'joint_trajectory_controller'],
-    #     output='screen'
-    # )
 
 
     control_node = Node(
@@ -79,11 +71,6 @@ def generate_launch_description():
         },
     )
 
-    # joint_state_broadcaster_spawner = Node(
-    #     package="controller_manager",
-    #     executable="spawner.py",
-    #     arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
-    # )
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner.py",
@@ -94,30 +81,16 @@ def generate_launch_description():
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner.py",
-        arguments=['joint_trajectory_controller'],
+        arguments=['position_controllers'],
     )
 
 
     nodes_to_start = [
         # joint_state_publisher_gui_node,
-        # RegisterEventHandler(
-        #     event_handler=OnProcessExit(
-        #         target_action=load_joint_state_controller,
-        #         on_exit=[load_joint_trajectory_controller],
-        #     )
-        # ),
-        # RegisterEventHandler(
-        #     event_handler=OnProcessExit(
-        #         target_action=robot_state_publisher_node,
-        #         on_exit=[control_node],
-        #     )
-        # ),
-        # joint_state_publisher_node,
+        joint_state_publisher_node,
         robot_state_publisher_node,
-        # rviz_node,
+        rviz_node,
         control_node,
-        # load_joint_trajectory_controller,
-        
         joint_state_broadcaster_spawner,
         robot_controller_spawner,
     ]
