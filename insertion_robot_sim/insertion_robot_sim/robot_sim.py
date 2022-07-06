@@ -19,40 +19,52 @@ class RobotSim(Node):
         super().__init__(name)
 
         ### For simulation
-        # subscribers
-        self.m_sub_AxAbsCommandX = self.create_subscription(
-            Float32,
-            'stage/axis/command/absolute/x',
-            lambda msg: self.topic_callbackAxisCommand(msg,0,True),
-            10)
-        self.m_sub_AxAbsCommandY = self.create_subscription(
-            Float32,
-            'stage/axis/command/absolute/y',
-            lambda msg: self.topic_callbackAxisCommand(msg,1,True),
-            10)
-        self.m_sub_AxAbsCommandz = self.create_subscription(
-            Float32,
-            'stage/axis/command/absolute/z',
-            lambda msg: self.topic_callbackAxisCommand(msg,2,True),
-            10)
-        self.m_sub_AxAbsCommandLS = self.create_subscription(
-            Float32,
-            'stage/axis/command/absolute/linear_stage',
-            lambda msg: self.topic_callbackAxisCommand(msg,3,True),
-            10)
+        # Subscribers
 
-        #publishers
-        self.m_pub_js = self.create_publisher(JointState, 'joint_states', 10)
-        self.x_axis_cmd_pub = self.create_publisher(Float32, 'stage/axis/command/absolute/x', 10)
+        # self.m_sub_AxAbsCommandX = self.create_subscription(
+        #     Float32,
+        #     'stage/axis/command/absolute/x',
+        #     lambda msg: self.topic_callbackAxisCommand(msg,0,True),
+        #     10)
+        # self.m_sub_AxAbsCommandY = self.create_subscription(
+        #     Float32,
+        #     'stage/axis/command/absolute/y',
+        #     lambda msg: self.topic_callbackAxisCommand(msg,1,True),
+        #     10)
+        # self.m_sub_AxAbsCommandz = self.create_subscription(
+        #     Float32,
+        #     'stage/axis/command/absolute/z',
+        #     lambda msg: self.topic_callbackAxisCommand(msg,2,True),
+        #     10)
+        # self.m_sub_AxAbsCommandLS = self.create_subscription(
+        #     Float32,
+        #     'stage/axis/command/absolute/linear_stage',
+        #     lambda msg: self.topic_callbackAxisCommand(msg,3,True),
+        #     10)
 
-
+        # Publishers
+        # self.m_pub_js = self.create_publisher(JointState, 'joint_states', 10)
+        self.x_axis_abs_cmd_pub = self.create_publisher(Float32, 'stage/axis/command/absolute/x', 10)
+        self.y_axis_abs_cmd_pub = self.create_publisher(Float32, 'stage/axis/command/absolute/y', 10)
+        self.z_axis_abs_cmd_pub = self.create_publisher(Float32, 'stage/axis/command/absolute/z', 10)
+        self.ls_axis_abs_cmd_pub = self.create_publisher(Float32, 'stage/axis/command/absolute/linear_stage', 10)
+        self.x_axis_rel_cmd_pub = self.create_publisher(Float32, 'stage/axis/command/relative/x', 10)
+        self.y_axis_rel_cmd_pub = self.create_publisher(Float32, 'stage/axis/command/relative/y', 10)
+        self.z_axis_rel_cmd_pub = self.create_publisher(Float32, 'stage/axis/command/relative/z', 10)
+        self.ls_axis_rel_cmd_pub = self.create_publisher(Float32, 'stage/axis/command/relative/linear_stage', 10)
 
 
         ### For dynamic reconfiguration GUI of insertion robot control
 
-        self.cli = self.create_client(Trigger, "/axis/state/toggle/x")
+        self.x_toggle_cli = self.create_client(Trigger, "/axis/state/toggle/x")
+        self.y_toggle_cli = self.create_client(Trigger, "/axis/state/toggle/y")
+        self.z_toggle_cli = self.create_client(Trigger, "/axis/state/toggle/z")
+        self.ls_toggle_cli = self.create_client(Trigger, "/axis/state/toggle/linear_stage")
+        self.x_zero_cli = self.create_client(Trigger, "/axis/zero/x")
+        self.y_zero_cli = self.create_client(Trigger, "/axis/zero/y")
+        self.z_zero_cli = self.create_client(Trigger, "/axis/zero/z")
+        self.ls_zero_cli = self.create_client(Trigger, "/axis/zero/linear_stage")
         self.req = Trigger.Request()
-
 
 
         # Parameters description
@@ -61,6 +73,10 @@ class RobotSim(Node):
         z_axis_toggle_descriptor = ParameterDescriptor(description='Toggle z-axis')
         ls_axis_toggle_descriptor = ParameterDescriptor(description='Toggle linear stage axis')
 
+        x_axis_zero_descriptor = ParameterDescriptor(description='Zero x-axis')
+        y_axis_zero_descriptor = ParameterDescriptor(description='Zero y-axis')
+        z_axis_zero_descriptor = ParameterDescriptor(description='Zero z-axis')
+        ls_axis_zero_descriptor = ParameterDescriptor(description='Zero linear stage axis')
 
         x_axis_command_range = FloatingPointRange(from_value=0.0, to_value=100.0, step=0.01)
         y_axis_command_range = FloatingPointRange(from_value=0.0, to_value=100.0, step=0.01)
@@ -79,10 +95,18 @@ class RobotSim(Node):
         self.declare_parameter("y_axis_toggle", False, y_axis_toggle_descriptor)
         self.declare_parameter("z_axis_toggle", False, z_axis_toggle_descriptor)
         self.declare_parameter("ls_axis_toggle", False, ls_axis_toggle_descriptor)
-        self.declare_parameter("x_axis_cmd", 0.0, x_axis_cmd_descriptor)
-        self.declare_parameter("y_axis_cmd", 0.0, y_axis_cmd_descriptor)
-        self.declare_parameter("z_axis_cmd", 0.0, z_axis_cmd_descriptor)
-        self.declare_parameter("ls_axis_cmd", 0.0, ls_axis_cmd_descriptor)
+        self.declare_parameter("x_axis_zero", False, x_axis_zero_descriptor)
+        self.declare_parameter("y_axis_zero", False, y_axis_zero_descriptor)
+        self.declare_parameter("z_axis_zero", False, z_axis_zero_descriptor)
+        self.declare_parameter("ls_axis_zero", False, ls_axis_zero_descriptor)
+        self.declare_parameter("x_axis_abs_cmd", 0.0, x_axis_cmd_descriptor)
+        self.declare_parameter("y_axis_abs_cmd", 0.0, y_axis_cmd_descriptor)
+        self.declare_parameter("z_axis_abs_cmd", 0.0, z_axis_cmd_descriptor)
+        self.declare_parameter("ls_axis_abs_cmd", 0.0, ls_axis_cmd_descriptor)
+        self.declare_parameter("x_axis_rel_cmd", 0.0, x_axis_cmd_descriptor)
+        self.declare_parameter("y_axis_rel_cmd", 0.0, y_axis_cmd_descriptor)
+        self.declare_parameter("z_axis_rel_cmd", 0.0, z_axis_cmd_descriptor)
+        self.declare_parameter("ls_axis_rel_cmd", 0.0, ls_axis_cmd_descriptor)
 
 
 
@@ -91,17 +115,56 @@ class RobotSim(Node):
         self.y_axis_toggle = self.get_parameter('y_axis_toggle').value
         self.z_axis_toggle = self.get_parameter('z_axis_toggle').value
         self.ls_axis_toggle = self.get_parameter('ls_axis_toggle').value
-        self.x_axis_cmd = self.get_parameter('x_axis_cmd').value
-        self.y_axis_cmd = self.get_parameter('y_axis_cmd').value
-        self.z_axis_cmd = self.get_parameter('z_axis_cmd').value
-        self.ls_axis_cmd = self.get_parameter('ls_axis_cmd').value
+        self.x_axis_zero = self.get_parameter('x_axis_zero').value
+        self.y_axis_zero = self.get_parameter('y_axis_zero').value
+        self.z_axis_zero = self.get_parameter('z_axis_zero').value
+        self.ls_axis_zero = self.get_parameter('ls_axis_zero').value
+        self.x_axis_abs_cmd = self.get_parameter('x_axis_abs_cmd').value
+        self.y_axis_abs_cmd = self.get_parameter('y_axis_abs_cmd').value
+        self.z_axis_abs_cmd = self.get_parameter('z_axis_abs_cmd').value
+        self.ls_axis_abs_cmd = self.get_parameter('ls_axis_abs_cmd').value
+        self.x_axis_rel_cmd = self.get_parameter('x_axis_rel_cmd').value
+        self.y_axis_rel_cmd = self.get_parameter('y_axis_rel_cmd').value
+        self.z_axis_rel_cmd = self.get_parameter('z_axis_rel_cmd').value
+        self.ls_axis_rel_cmd = self.get_parameter('ls_axis_rel_cmd').value
 
         # Assign callback function for parameters
         self.add_on_set_parameters_callback(self.parameters_callback)
 
-    def send_request(self):
-            self.future = self.cli.call_async(self.req)
-            rclpy.spin_until_future_complete(self, self.future)
+    def send_request(self, axis):
+        if axis=="x":
+            self.future = self.x_toggle_cli.call_async(self.req)
+            #rclpy.spin_until_future_complete(self, self.future)
+            return self.future.result()
+        if axis=="y":
+            self.future = self.y_toggle_cli.call_async(self.req)
+            #rclpy.spin_until_future_complete(self, self.future)
+            return self.future.result()
+        if axis=="z":
+            self.future = self.z_toggle_cli.call_async(self.req)
+            #rclpy.spin_until_future_complete(self, self.future)
+            return self.future.result()
+        if axis=="ls":
+            self.future = self.ls_toggle_cli.call_async(self.req)
+            #rclpy.spin_until_future_complete(self, self.future)
+            return self.future.result()
+
+    def send_request_zero(self, axis):
+        if axis=="x":
+            self.future = self.x_zero_cli.call_async(self.req)
+            #rclpy.spin_until_future_complete(self, self.future)
+            return self.future.result()
+        if axis=="y":
+            self.future = self.y_zero_cli.call_async(self.req)
+            #rclpy.spin_until_future_complete(self, self.future)
+            return self.future.result()
+        if axis=="z":
+            self.future = self.z_zero_cli.call_async(self.req)
+            #rclpy.spin_until_future_complete(self, self.future)
+            return self.future.result()
+        if axis=="ls":
+            self.future = self.ls_zero_cli.call_async(self.req)
+            #rclpy.spin_until_future_complete(self, self.future)
             return self.future.result()
 
     def topic_callbackAxisCommand(self, msg, axis, is_absolute):
@@ -112,19 +175,96 @@ class RobotSim(Node):
 
     def parameters_callback(self, params):
         for param in params:
-            # print(vars(param))
+            
             if param.name == "x_axis_toggle":
                 self.x_axis_toggle = param.value
                 #call service named "/axis/state/toggle/x"
-                self.send_request()
+                self.send_request("x")
+            if param.name == "y_axis_toggle":
+                self.y_axis_toggle = param.value
+                #call service named "/axis/state/toggle/x"
+                self.send_request("y")
+            if param.name == "z_axis_toggle":
+                self.z_axis_toggle = param.value
+                #call service named "/axis/state/toggle/x"
+                self.send_request("z")
+            if param.name == "ls_axis_toggle":
+                self.ls_axis_toggle = param.value
+                #call service named "/axis/state/toggle/x"
+                self.send_request("ls")
 
-            if param.name == "x_axis_cmd":
-                self.x_axis_cmd = param.value
+            if param.name == "x_axis_zero":
+                self.x_axis_zero = param.value
+                #call service named "/axis/state/toggle/x"
+                self.send_request_zero("x")
+            if param.name == "y_axis_zero":
+                self.y_axis_zero = param.value
+                #call service named "/axis/state/toggle/x"
+                self.send_request_zero("y")
+            if param.name == "z_axis_zero":
+                self.z_axis_zero = param.value
+                #call service named "/axis/state/toggle/x"
+                self.send_request_zero("z")
+            if param.name == "ls_axis_zero":
+                self.ls_axis_zero = param.value
+                #call service named "/axis/state/toggle/x"
+                self.send_request_zero("ls")
+
+            if param.name == "x_axis_abs_cmd":
+                self.x_axis_abs_cmd = param.value
                 #publish to the corresponding topic
                 msg = Float32()
                 msg.data=param.value
-                self.x_axis_cmd_pub.publish(msg)
+                self.x_axis_abs_cmd_pub.publish(msg)
 
+            if param.name == "y_axis_abs_cmd":
+                self.y_axis_abs_cmd = param.value
+                #publish to the corresponding topic
+                msg = Float32()
+                msg.data=param.value
+                self.y_axis_abs_cmd_pub.publish(msg)
+
+            if param.name == "z_axis_abs_cmd":
+                self.z_axis_abs_cmd = param.value
+                #publish to the corresponding topic
+                msg = Float32()
+                msg.data=param.value
+                self.z_axis_abs_cmd_pub.publish(msg)
+            
+            if param.name == "ls_axis_abs_cmd":
+                self.ls_axis_abs_cmd = param.value
+                #publish to the corresponding topic
+                msg = Float32()
+                msg.data=param.value
+                self.ls_axis_abs_cmd_pub.publish(msg)
+
+            if param.name == "x_axis_rel_cmd":
+                self.x_axis_rel_cmd = param.value
+                #publish to the corresponding topic
+                msg = Float32()
+                msg.data=param.value
+                self.x_axis_rel_cmd_pub.publish(msg)
+
+            if param.name == "y_axis_rel_cmd":
+                self.y_axis_rel_cmd = param.value
+                #publish to the corresponding topic
+                msg = Float32()
+                msg.data=param.value
+                self.y_axis_rel_cmd_pub.publish(msg)
+
+            if param.name == "z_axis_rel_cmd":
+                self.z_axis_rel_cmd = param.value
+                #publish to the corresponding topic
+                msg = Float32()
+                msg.data=param.value
+                self.z_axis_rel_cmd_pub.publish(msg)
+
+            if param.name == "ls_axis_rel_cmd":
+                self.ls_axis_rel_cmd = param.value
+                #publish to the corresponding topic
+                msg = Float32()
+                msg.data=param.value
+                self.ls_axis_rel_cmd_pub.publish(msg)
         return SetParametersResult(successful=True)
 
 
