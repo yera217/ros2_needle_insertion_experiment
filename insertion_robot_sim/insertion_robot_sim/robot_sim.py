@@ -55,7 +55,7 @@ class RobotSim(Node):
 
 
         ### For dynamic reconfiguration GUI of insertion robot control
-
+        self.abort_cli = self.create_client(Trigger, "abort")
         self.x_toggle_cli = self.create_client(Trigger, "/axis/state/toggle/x")
         self.y_toggle_cli = self.create_client(Trigger, "/axis/state/toggle/y")
         self.z_toggle_cli = self.create_client(Trigger, "/axis/state/toggle/z")
@@ -68,6 +68,8 @@ class RobotSim(Node):
 
 
         # Parameters description
+        abort_descriptor = ParameterDescriptor(description='Aborting all movements')
+
         x_axis_toggle_descriptor = ParameterDescriptor(description='Toggle x-axis')
         y_axis_toggle_descriptor = ParameterDescriptor(description='Toggle y-axis')
         z_axis_toggle_descriptor = ParameterDescriptor(description='Toggle z-axis')
@@ -78,10 +80,10 @@ class RobotSim(Node):
         z_axis_zero_descriptor = ParameterDescriptor(description='Zero z-axis')
         ls_axis_zero_descriptor = ParameterDescriptor(description='Zero linear stage axis')
 
-        x_axis_command_range = FloatingPointRange(from_value=0.0, to_value=100.0, step=0.01)
-        y_axis_command_range = FloatingPointRange(from_value=0.0, to_value=100.0, step=0.01)
-        z_axis_command_range = FloatingPointRange(from_value=0.0, to_value=100.0, step=0.01)
-        ls_axis_command_range = FloatingPointRange(from_value=0.0, to_value=100.0, step=0.01)
+        x_axis_command_range = FloatingPointRange(from_value=-100.0, to_value=100.0, step=0.01)
+        y_axis_command_range = FloatingPointRange(from_value=-100.0, to_value=100.0, step=0.01)
+        z_axis_command_range = FloatingPointRange(from_value=-100.0, to_value=100.0, step=0.01)
+        ls_axis_command_range = FloatingPointRange(from_value=-100.0, to_value=100.0, step=0.01)
         x_axis_cmd_descriptor = ParameterDescriptor(description='Position command for x-axis', floating_point_range=[x_axis_command_range])
         y_axis_cmd_descriptor = ParameterDescriptor(description='Position command for y-axis', floating_point_range=[y_axis_command_range])
         z_axis_cmd_descriptor = ParameterDescriptor(description='Position command for z-axis', floating_point_range=[z_axis_command_range])
@@ -91,6 +93,7 @@ class RobotSim(Node):
 
 
         # Parameters declaration
+        self.declare_parameter("abort", False, abort_descriptor)
         self.declare_parameter("x_axis_toggle", False, x_axis_toggle_descriptor)
         self.declare_parameter("y_axis_toggle", False, y_axis_toggle_descriptor)
         self.declare_parameter("z_axis_toggle", False, z_axis_toggle_descriptor)
@@ -111,6 +114,7 @@ class RobotSim(Node):
 
 
         # Save parameters in class properties
+        self.abort = self.get_parameter('abort').value
         self.x_axis_toggle = self.get_parameter('x_axis_toggle').value
         self.y_axis_toggle = self.get_parameter('y_axis_toggle').value
         self.z_axis_toggle = self.get_parameter('z_axis_toggle').value
@@ -167,6 +171,11 @@ class RobotSim(Node):
             #rclpy.spin_until_future_complete(self, self.future)
             return self.future.result()
 
+    def send_request_abort(self):
+        self.future = self.abort_cli.call_async(self.req)
+        #rclpy.spin_until_future_complete(self, self.future)
+        return self.future.result()
+
     def topic_callbackAxisCommand(self, msg, axis, is_absolute):
         self.get_logger().info('TEST axis ID: %i; cmd value %f' % (axis, msg.data))
 
@@ -175,7 +184,11 @@ class RobotSim(Node):
 
     def parameters_callback(self, params):
         for param in params:
-            
+            if param.name == "abort":
+                self.abort = param.value
+                #call service named "/axis/state/toggle/x"
+                self.send_request_abort()
+
             if param.name == "x_axis_toggle":
                 self.x_axis_toggle = param.value
                 #call service named "/axis/state/toggle/x"
