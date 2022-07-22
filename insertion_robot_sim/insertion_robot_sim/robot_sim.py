@@ -55,15 +55,15 @@ class RobotSim(Node):
 
 
         ### For dynamic reconfiguration GUI of insertion robot control
-        self.abort_cli = self.create_client(Trigger, "abort")
-        self.x_toggle_cli = self.create_client(Trigger, "/axis/state/toggle/x")
-        self.y_toggle_cli = self.create_client(Trigger, "/axis/state/toggle/y")
-        self.z_toggle_cli = self.create_client(Trigger, "/axis/state/toggle/z")
-        self.ls_toggle_cli = self.create_client(Trigger, "/axis/state/toggle/linear_stage")
-        self.x_zero_cli = self.create_client(Trigger, "/axis/zero/x")
-        self.y_zero_cli = self.create_client(Trigger, "/axis/zero/y")
-        self.z_zero_cli = self.create_client(Trigger, "/axis/zero/z")
-        self.ls_zero_cli = self.create_client(Trigger, "/axis/zero/linear_stage")
+        self.abort_cli = self.create_client(Trigger, "/stage/abort")
+        self.x_toggle_cli = self.create_client(Trigger, "/stage/axis/state/toggle/x")
+        self.y_toggle_cli = self.create_client(Trigger, "/stage/axis/state/toggle/y")
+        self.z_toggle_cli = self.create_client(Trigger, "/stage/axis/state/toggle/z")
+        self.ls_toggle_cli = self.create_client(Trigger, "/stage/axis/state/toggle/linear_stage")
+        self.x_zero_cli = self.create_client(Trigger, "/stage/axis/zero/x")
+        self.y_zero_cli = self.create_client(Trigger, "/stage/axis/zero/y")
+        self.z_zero_cli = self.create_client(Trigger, "/stage/axis/zero/z")
+        self.ls_zero_cli = self.create_client(Trigger, "/stage/axis/zero/linear_stage")
         self.req = Trigger.Request()
 
 
@@ -114,23 +114,23 @@ class RobotSim(Node):
 
 
         # Save parameters in class properties
-        self.abort = self.get_parameter('abort').value
-        self.x_axis_toggle = self.get_parameter('x_axis_toggle').value
-        self.y_axis_toggle = self.get_parameter('y_axis_toggle').value
-        self.z_axis_toggle = self.get_parameter('z_axis_toggle').value
-        self.ls_axis_toggle = self.get_parameter('ls_axis_toggle').value
-        self.x_axis_zero = self.get_parameter('x_axis_zero').value
-        self.y_axis_zero = self.get_parameter('y_axis_zero').value
-        self.z_axis_zero = self.get_parameter('z_axis_zero').value
-        self.ls_axis_zero = self.get_parameter('ls_axis_zero').value
-        self.x_axis_abs_cmd = self.get_parameter('x_axis_abs_cmd').value
-        self.y_axis_abs_cmd = self.get_parameter('y_axis_abs_cmd').value
-        self.z_axis_abs_cmd = self.get_parameter('z_axis_abs_cmd').value
-        self.ls_axis_abs_cmd = self.get_parameter('ls_axis_abs_cmd').value
-        self.x_axis_rel_cmd = self.get_parameter('x_axis_rel_cmd').value
-        self.y_axis_rel_cmd = self.get_parameter('y_axis_rel_cmd').value
-        self.z_axis_rel_cmd = self.get_parameter('z_axis_rel_cmd').value
-        self.ls_axis_rel_cmd = self.get_parameter('ls_axis_rel_cmd').value
+        # self.abort = self.get_parameter('abort').value
+        # self.x_axis_toggle = self.get_parameter('x_axis_toggle').value
+        # self.y_axis_toggle = self.get_parameter('y_axis_toggle').value
+        # self.z_axis_toggle = self.get_parameter('z_axis_toggle').value
+        # self.ls_axis_toggle = self.get_parameter('ls_axis_toggle').value
+        # self.x_axis_zero = self.get_parameter('x_axis_zero').value
+        # self.y_axis_zero = self.get_parameter('y_axis_zero').value
+        # self.z_axis_zero = self.get_parameter('z_axis_zero').value
+        # self.ls_axis_zero = self.get_parameter('ls_axis_zero').value
+        # self.x_axis_abs_cmd = self.get_parameter('x_axis_abs_cmd').value
+        # self.y_axis_abs_cmd = self.get_parameter('y_axis_abs_cmd').value
+        # self.z_axis_abs_cmd = self.get_parameter('z_axis_abs_cmd').value
+        # self.ls_axis_abs_cmd = self.get_parameter('ls_axis_abs_cmd').value
+        # self.x_axis_rel_cmd = self.get_parameter('x_axis_rel_cmd').value
+        # self.y_axis_rel_cmd = self.get_parameter('y_axis_rel_cmd').value
+        # self.z_axis_rel_cmd = self.get_parameter('z_axis_rel_cmd').value
+        # self.ls_axis_rel_cmd = self.get_parameter('ls_axis_rel_cmd').value
 
         # Assign callback function for parameters
         self.add_on_set_parameters_callback(self.parameters_callback)
@@ -184,100 +184,138 @@ class RobotSim(Node):
 
     def parameters_callback(self, params):
         for param in params:
+            #!!! Should be a button for movement abortion, not toggle
             if param.name == "abort":
-                self.abort = param.value
                 #call service named "/axis/state/toggle/x"
-                self.send_request_abort()
+                #TO:DO: get current axes state and renew position values
+                if param.type_ == Parameter.Type.BOOL:
+                    self.send_request_abort()
+                else:
+                    return SetParametersResult(successful=False)
+
 
             if param.name == "x_axis_toggle":
-                self.x_axis_toggle = param.value
                 #call service named "/axis/state/toggle/x"
-                self.send_request("x")
+                if param.type_ == Parameter.Type.BOOL:
+                    self.send_request("x")
+                else:
+                    return SetParametersResult(successful=False)
             if param.name == "y_axis_toggle":
-                self.y_axis_toggle = param.value
                 #call service named "/axis/state/toggle/x"
-                self.send_request("y")
+                if param.type_ == Parameter.Type.BOOL:
+                    self.send_request("y")
+                else:
+                    return SetParametersResult(successful=False)
             if param.name == "z_axis_toggle":
-                self.z_axis_toggle = param.value
                 #call service named "/axis/state/toggle/x"
-                self.send_request("z")
+                if param.type_ == Parameter.Type.BOOL:
+                    self.send_request("z")
+                else:
+                    return SetParametersResult(successful=False)
             if param.name == "ls_axis_toggle":
-                self.ls_axis_toggle = param.value
                 #call service named "/axis/state/toggle/x"
-                self.send_request("ls")
+                if param.type_ == Parameter.Type.BOOL:
+                    self.send_request("ls")
+                else:
+                    return SetParametersResult(successful=False)
 
+            #!!! Should be a button for zeroing, not toggle
             if param.name == "x_axis_zero":
-                self.x_axis_zero = param.value
                 #call service named "/axis/state/toggle/x"
-                self.send_request_zero("x")
+                if param.type_ == Parameter.Type.BOOL:
+                    self.send_request_zero("x")
+                else:
+                    return SetParametersResult(successful=False)
             if param.name == "y_axis_zero":
-                self.y_axis_zero = param.value
                 #call service named "/axis/state/toggle/x"
-                self.send_request_zero("y")
+                if param.type_ == Parameter.Type.BOOL:
+                    self.send_request_zero("y")
+                else:
+                    return SetParametersResult(successful=False)
             if param.name == "z_axis_zero":
-                self.z_axis_zero = param.value
                 #call service named "/axis/state/toggle/x"
-                self.send_request_zero("z")
+                if param.type_ == Parameter.Type.BOOL:
+                    self.send_request_zero("z")
+                else:
+                    return SetParametersResult(successful=False)
             if param.name == "ls_axis_zero":
-                self.ls_axis_zero = param.value
                 #call service named "/axis/state/toggle/x"
-                self.send_request_zero("ls")
+                if param.type_ == Parameter.Type.BOOL:
+                    self.send_request_zero("ls")
+                else:
+                    return SetParametersResult(successful=False)
 
             if param.name == "x_axis_abs_cmd":
-                self.x_axis_abs_cmd = param.value
                 #publish to the corresponding topic
-                msg = Float32()
-                msg.data=param.value
-                self.x_axis_abs_cmd_pub.publish(msg)
+                if param.type_ in [Parameter.Type.DOUBLE, Parameter.Type.INTEGER]:
+                    msg = Float32()
+                    msg.data=param.value
+                    self.x_axis_abs_cmd_pub.publish(msg)
+                else:
+                    return SetParametersResult(successful=False)
 
             if param.name == "y_axis_abs_cmd":
-                self.y_axis_abs_cmd = param.value
                 #publish to the corresponding topic
-                msg = Float32()
-                msg.data=param.value
-                self.y_axis_abs_cmd_pub.publish(msg)
+                if param.type_ in [Parameter.Type.DOUBLE, Parameter.Type.INTEGER]:
+                    msg = Float32()
+                    msg.data=param.value
+                    self.y_axis_abs_cmd_pub.publish(msg)
+                else:
+                    return SetParametersResult(successful=False)
 
             if param.name == "z_axis_abs_cmd":
-                self.z_axis_abs_cmd = param.value
                 #publish to the corresponding topic
-                msg = Float32()
-                msg.data=param.value
-                self.z_axis_abs_cmd_pub.publish(msg)
+                if param.type_ in [Parameter.Type.DOUBLE, Parameter.Type.INTEGER]:
+                    msg = Float32()
+                    msg.data=param.value
+                    self.z_axis_abs_cmd_pub.publish(msg)
+                else:
+                    return SetParametersResult(successful=False)
             
             if param.name == "ls_axis_abs_cmd":
-                self.ls_axis_abs_cmd = param.value
                 #publish to the corresponding topic
-                msg = Float32()
-                msg.data=param.value
-                self.ls_axis_abs_cmd_pub.publish(msg)
+                if param.type_ in [Parameter.Type.DOUBLE, Parameter.Type.INTEGER]:
+                    msg = Float32()
+                    msg.data=param.value
+                    self.ls_axis_abs_cmd_pub.publish(msg)
+                else:
+                    return SetParametersResult(successful=False)
 
             if param.name == "x_axis_rel_cmd":
-                self.x_axis_rel_cmd = param.value
                 #publish to the corresponding topic
-                msg = Float32()
-                msg.data=param.value
-                self.x_axis_rel_cmd_pub.publish(msg)
+                if param.type_ in [Parameter.Type.DOUBLE, Parameter.Type.INTEGER]:
+                    msg = Float32()
+                    msg.data=param.value
+                    self.x_axis_rel_cmd_pub.publish(msg)
+                else:
+                    return SetParametersResult(successful=False)
 
             if param.name == "y_axis_rel_cmd":
-                self.y_axis_rel_cmd = param.value
                 #publish to the corresponding topic
-                msg = Float32()
-                msg.data=param.value
-                self.y_axis_rel_cmd_pub.publish(msg)
+                if param.type_ in [Parameter.Type.DOUBLE, Parameter.Type.INTEGER]:
+                    msg = Float32()
+                    msg.data=param.value
+                    self.y_axis_rel_cmd_pub.publish(msg)
+                else:
+                    return SetParametersResult(successful=False)
 
             if param.name == "z_axis_rel_cmd":
-                self.z_axis_rel_cmd = param.value
                 #publish to the corresponding topic
-                msg = Float32()
-                msg.data=param.value
-                self.z_axis_rel_cmd_pub.publish(msg)
+                if param.type_ in [Parameter.Type.DOUBLE, Parameter.Type.INTEGER]:
+                    msg = Float32()
+                    msg.data=param.value
+                    self.z_axis_rel_cmd_pub.publish(msg)
+                else:
+                    return SetParametersResult(successful=False)
 
             if param.name == "ls_axis_rel_cmd":
-                self.ls_axis_rel_cmd = param.value
                 #publish to the corresponding topic
-                msg = Float32()
-                msg.data=param.value
-                self.ls_axis_rel_cmd_pub.publish(msg)
+                if param.type_ in [Parameter.Type.DOUBLE, Parameter.Type.INTEGER]:
+                    msg = Float32()
+                    msg.data=param.value
+                    self.ls_axis_rel_cmd_pub.publish(msg)
+                else:
+                    return SetParametersResult(successful=False)
         return SetParametersResult(successful=True)
 
 
