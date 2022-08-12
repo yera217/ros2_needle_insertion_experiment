@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>insertion_robot_rqt</name>
+  <version>0.0.0</version>
+  <description>TODO: Package description</description>
+  <maintainer email="yernar.zhetpissov@gmail.com">yera</maintainer>
+  <license>TODO: License declaration</license>
+
+  <exec_depend version_gte="0.2.19">python_qt_binding</exec_depend>
+  <exec_depend>python3-catkin-pkg-modules</exec_depend>
+  <exec_depend>qt_gui_py_common</exec_depend>
+  <exec_depend>rqt_gui</exec_depend>
+  <exec_depend>rqt_gui_py</exec_depend>
+  <exec_depend>rqt_py_common</exec_depend>
+
+  
+  <export>
+    <rqt_gui plugin="${prefix}/plugin.xml"/>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

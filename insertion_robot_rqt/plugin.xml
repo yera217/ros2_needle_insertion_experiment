@@ -1,0 +1,17 @@
+<library path="src">
+  <class name="RobotControl" type="insertion_robot_rqt.robot_control.RobotControl" base_class_type="rqt_gui_py::Plugin">
+    <description>
+      A Python GUI rqt plugin for needle insertion robot control.
+    </description>
+    <qtgui>
+      <!-- <group>
+        <label>Topics</label>
+        <icon type="theme">folder</icon>
+        <statustip>Plugins related to ROS topics.</statustip>
+      </group> -->
+      <label>Needle insertion robot control GUI.</label>
+      <icon type="theme">applications-other</icon>
+      <statustip>A Python GUI rqt plugin for needle insertion robot control.</statustip>
+    </qtgui>
+  </class>
+</library>
