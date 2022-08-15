@@ -175,28 +175,12 @@
       </rect>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>LS</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLCDNumber" name="lcdNumber_Y"/>
-      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Y</string>
         </property>
        </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLCDNumber" name="lcdNumber_LS"/>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLCDNumber" name="lcdNumber_Z"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_2">
@@ -205,42 +189,55 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QRadioButton" name="radioButton_Y">
+      <item row="0" column="1">
+       <widget class="QLCDNumber" name="lcdNumber_Y"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLCDNumber" name="lcdNumber_Z"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
         <property name="text">
-         <string/>
+         <string>LS</string>
         </property>
-        <property name="checkable">
-         <bool>false</bool>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLCDNumber" name="lcdNumber_LS"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_stateY">
+        <property name="styleSheet">
+         <string notr="true">background-color: red;
+border:  1px solid black;</string>
         </property>
-        <property name="autoExclusive">
+        <property name="text">
+         <string>OFF</string>
+        </property>
+        <property name="scaledContents">
          <bool>false</bool>
         </property>
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QRadioButton" name="radioButton_Z">
+       <widget class="QLabel" name="label_stateZ">
+        <property name="styleSheet">
+         <string notr="true">background-color: red;
+border:  1px solid black;</string>
+        </property>
         <property name="text">
-         <string/>
-        </property>
-        <property name="checkable">
-         <bool>false</bool>
-        </property>
-        <property name="autoExclusive">
-         <bool>false</bool>
+         <string>OFF</string>
         </property>
        </widget>
       </item>
       <item row="2" column="2">
-       <widget class="QRadioButton" name="radioButton_LS">
+       <widget class="QLabel" name="label_statLS">
+        <property name="styleSheet">
+         <string notr="true">background-color: red;
+border:  1px solid black;</string>
+        </property>
         <property name="text">
-         <string/>
-        </property>
-        <property name="checkable">
-         <bool>false</bool>
-        </property>
-        <property name="autoExclusive">
-         <bool>false</bool>
+         <string>OFF</string>
         </property>
        </widget>
       </item>
@@ -253,7 +250,7 @@
       <x>150</x>
       <y>290</y>
       <width>851</width>
-      <height>471</height>
+      <height>591</height>
      </rect>
     </property>
     <property name="title">
@@ -262,10 +259,10 @@
     <widget class="QGroupBox" name="groupBox_relMove">
      <property name="geometry">
       <rect>
-       <x>50</x>
-       <y>60</y>
-       <width>751</width>
-       <height>171</height>
+       <x>20</x>
+       <y>30</y>
+       <width>801</width>
+       <height>211</height>
       </rect>
      </property>
      <property name="title">
@@ -276,12 +273,12 @@
        <rect>
         <x>20</x>
         <y>30</y>
-        <width>711</width>
-        <height>142</height>
+        <width>761</width>
+        <height>158</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="1">
+      <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0">
+       <item row="0" column="6">
         <widget class="QPushButton" name="pushButton_relMoveY">
          <property name="text">
           <string>Move Y</string>
@@ -289,13 +286,6 @@
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QPushButton" name="pushButton_relMoveLS">
-         <property name="text">
-          <string>Move LS</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
         <widget class="QSlider" name="horizontalSlider_relMoveZ">
          <property name="minimum">
           <number>-100</number>
@@ -306,9 +296,116 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
+         <property name="tickPosition">
+          <enum>QSlider::TicksAbove</enum>
+         </property>
         </widget>
        </item>
        <item row="2" column="0">
+        <widget class="QLabel" name="label_relMoveZ_min">
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="4">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="3">
+        <widget class="QLabel" name="label_relMoveLS_max">
+         <property name="text">
+          <string>100</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="4">
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_relMoveLS_min">
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="6">
+        <widget class="QPushButton" name="pushButton_relMoveLS">
+         <property name="text">
+          <string>Move LS</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="6">
+        <widget class="QPushButton" name="pushButton_relMoveZ">
+         <property name="text">
+          <string>Move Z</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_relMoveY_min">
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="QLabel" name="label_relMoveZ_max">
+         <property name="text">
+          <string>100</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLabel" name="label_relMoveY_max">
+         <property name="text">
+          <string>100</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="1">
         <widget class="QSlider" name="horizontalSlider_relMoveLS">
          <property name="minimum">
           <number>-100</number>
@@ -319,17 +416,19 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="pushButton_relMoveZ">
-         <property name="text">
-          <string>Move Z</string>
+         <property name="tickPosition">
+          <enum>QSlider::TicksAbove</enum>
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
+       <item row="0" column="1">
         <widget class="QSlider" name="horizontalSlider_relMoveY">
+         <property name="tabletTracking">
+          <bool>false</bool>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
          <property name="minimum">
           <number>-100</number>
          </property>
@@ -346,7 +445,46 @@
           <bool>false</bool>
          </property>
          <property name="tickPosition">
-          <enum>QSlider::NoTicks</enum>
+          <enum>QSlider::TicksAbove</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="5">
+        <widget class="QLineEdit" name="lineedit_relMoveY">
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="5">
+        <widget class="QLineEdit" name="lineedit_relMoveZ">
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="5">
+        <widget class="QLineEdit" name="lineedit_relMoveLS">
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>0</string>
          </property>
         </widget>
        </item>
@@ -356,10 +494,10 @@
     <widget class="QGroupBox" name="groupBox_absMove">
      <property name="geometry">
       <rect>
-       <x>50</x>
-       <y>260</y>
-       <width>751</width>
-       <height>171</height>
+       <x>20</x>
+       <y>250</y>
+       <width>801</width>
+       <height>191</height>
       </rect>
      </property>
      <property name="title">
@@ -370,33 +508,28 @@
        <rect>
         <x>20</x>
         <y>30</y>
-        <width>711</width>
-        <height>116</height>
+        <width>761</width>
+        <height>158</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="2" column="1">
-        <widget class="QPushButton" name="pushButton_absMoveLS">
-         <property name="text">
-          <string>Move LS</string>
+       <item row="0" column="3">
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
-        </widget>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
        <item row="0" column="1">
-        <widget class="QPushButton" name="pushButton_absMoveY">
-         <property name="text">
-          <string>Move Y</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="pushButton_absMoveZ">
-         <property name="text">
-          <string>Move Z</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
         <widget class="QSlider" name="horizontalSlider_absMoveY">
          <property name="mouseTracking">
           <bool>true</bool>
@@ -410,9 +543,26 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
+         <property name="tickPosition">
+          <enum>QSlider::TicksAbove</enum>
+         </property>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_absMoveLS_min">
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QLabel" name="label_absMoveLS_max">
+         <property name="text">
+          <string>100</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
         <widget class="QSlider" name="horizontalSlider_absMoveZ">
          <property name="minimum">
           <number>-100</number>
@@ -423,9 +573,79 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
+         <property name="tickPosition">
+          <enum>QSlider::TicksAbove</enum>
+         </property>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="2" column="3">
+        <spacer name="horizontalSpacer_6">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="5">
+        <widget class="QPushButton" name="pushButton_absMoveLS">
+         <property name="text">
+          <string>Move LS</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <spacer name="horizontalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="5">
+        <widget class="QPushButton" name="pushButton_absMoveZ">
+         <property name="text">
+          <string>Move Z</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_absMoveY_min">
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="label_absMoveY_max">
+         <property name="text">
+          <string>100</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="5">
+        <widget class="QPushButton" name="pushButton_absMoveY">
+         <property name="text">
+          <string>Move Y</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
         <widget class="QSlider" name="horizontalSlider_absMoveLS">
          <property name="minimum">
           <number>-100</number>
@@ -436,35 +656,81 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
+         <property name="tickPosition">
+          <enum>QSlider::TicksAbove</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_absMoveZ_min">
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLabel" name="label_absMoveZ_max">
+         <property name="text">
+          <string>100</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QLineEdit" name="lineedit_absMoveY">
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4">
+        <widget class="QLineEdit" name="lineedit_absMoveZ">
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="4">
+        <widget class="QLineEdit" name="lineedit_absMoveLS">
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>0</string>
+         </property>
         </widget>
        </item>
       </layout>
      </widget>
     </widget>
+    <widget class="QPushButton" name="pushButton_abort">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>470</y>
+       <width>191</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>ABORT</string>
+     </property>
+    </widget>
    </widget>
-   <widget class="QPushButton" name="pushButton_abort">
-    <property name="geometry">
-     <rect>
-      <x>490</x>
-      <y>790</y>
-      <width>191</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>ABORT</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QStatusBar" name="statusbar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>3</width>
-     <height>23</height>
-    </rect>
-   </property>
   </widget>
  </widget>
  <resources/>

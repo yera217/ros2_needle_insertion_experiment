@@ -22,12 +22,13 @@ from rclpy.qos import QoSProfile
 
 from std_srvs.srv import Trigger
 from std_msgs.msg import Float32
+from std_msgs.msg import Bool
 
 
 
 # main class inherits from the ui window class
 class RobotControlWidget(QWidget):
-    publish_once = Signal(int)
+    # publish_once = Signal(int)
 
     def __init__(self, node, parent=None):
         super(RobotControlWidget, self).__init__(parent)
@@ -37,6 +38,9 @@ class RobotControlWidget(QWidget):
         ui_file = os.path.join(package_path, 'share', 'insertion_robot_rqt', 'resource', 'RobotControl.ui')
         loadUi(ui_file, self)
 
+
+
+        # "Initialize" and "State" functionality implementation
         self.pushButton_toggleY.clicked.connect(lambda x: self.pushButton_srv_event("/stage/axis/state/toggle/y"))
         self.pushButton_toggleZ.clicked.connect(lambda x: self.pushButton_srv_event("/stage/axis/state/toggle/z"))
         self.pushButton_toggleLS.clicked.connect(lambda x: self.pushButton_srv_event("/stage/axis/state/toggle/linear_stage"))
@@ -47,7 +51,44 @@ class RobotControlWidget(QWidget):
         self.pushButton_zeroLS.clicked.connect(lambda x: self.pushButton_srv_event("/stage/axis/zero/linear_stage"))
         self.pushButton_zeroAll.clicked.connect(self.pushButton_zeroAll_event)
 
-        self.pushButton_abort.clicked.connect(lambda x: self.pushButton_srv_event("/stage/abort"))
+
+        self._node.create_subscription(Float32, "/stage/axis/position/y", lambda msg: self.axis_position_callback(msg, "y"), 10)
+        self._node.create_subscription(Float32, "/stage/axis/position/z", lambda msg: self.axis_position_callback(msg, "z"), 10 )
+        self._node.create_subscription(Float32, "/stage/axis/position/linear_stage", lambda msg: self.axis_position_callback(msg, "linear_stage"), 10 )
+
+        self._node.create_subscription(Bool, "/stage/axis/state/on/y", lambda msg: self.axis_state_callback(msg, "y"), 10)
+        self._node.create_subscription(Bool, "/stage/axis/state/on/z", lambda msg: self.axis_state_callback(msg, "z"), 10)
+        self._node.create_subscription(Bool, "/stage/axis/state/on/linear_stage", lambda msg: self.axis_state_callback(msg, "linear_stage"), 10)
+
+        # "Move" functionality implementation
+        self.label_relMoveY_min.setText(str(self.horizontalSlider_relMoveY.minimum()))
+        self.label_relMoveY_max.setText(str(self.horizontalSlider_relMoveY.maximum()))
+        self.label_relMoveZ_min.setText(str(self.horizontalSlider_relMoveZ.minimum()))
+        self.label_relMoveZ_max.setText(str(self.horizontalSlider_relMoveZ.maximum()))
+        self.label_relMoveLS_min.setText(str(self.horizontalSlider_relMoveLS.minimum()))
+        self.label_relMoveLS_max.setText(str(self.horizontalSlider_relMoveLS.maximum()))
+        self.label_absMoveY_min.setText(str(self.horizontalSlider_absMoveY.minimum()))
+        self.label_absMoveY_max.setText(str(self.horizontalSlider_absMoveY.maximum()))
+        self.label_absMoveZ_min.setText(str(self.horizontalSlider_absMoveZ.minimum()))
+        self.label_absMoveZ_max.setText(str(self.horizontalSlider_absMoveZ.maximum()))
+        self.label_absMoveLS_min.setText(str(self.horizontalSlider_absMoveLS.minimum()))
+        self.label_absMoveLS_max.setText(str(self.horizontalSlider_absMoveLS.maximum()))
+
+        self.lineedit_relMoveY.setInputMask("####")
+        self.lineedit_relMoveZ.setInputMask("####")
+        self.lineedit_relMoveLS.setInputMask("####")
+        self.lineedit_absMoveY.setInputMask("####")
+        self.lineedit_absMoveZ.setInputMask("####")
+        self.lineedit_absMoveLS.setInputMask("####")
+
+        self.horizontalSlider_relMoveY.valueChanged.connect(lambda x: self.lineedit_move_event(self.horizontalSlider_relMoveY.value(), self.lineedit_relMoveY))
+        self.horizontalSlider_relMoveZ.valueChanged.connect(lambda x: self.lineedit_move_event(self.horizontalSlider_relMoveZ.value(), self.lineedit_relMoveZ))
+        self.horizontalSlider_relMoveLS.valueChanged.connect(lambda x: self.lineedit_move_event(self.horizontalSlider_relMoveLS.value(), self.lineedit_relMoveLS))
+        self.horizontalSlider_absMoveY.valueChanged.connect(lambda x: self.lineedit_move_event(self.horizontalSlider_absMoveY.value(), self.lineedit_absMoveY))
+        self.horizontalSlider_absMoveZ.valueChanged.connect(lambda x: self.lineedit_move_event(self.horizontalSlider_absMoveZ.value(), self.lineedit_absMoveZ))
+        self.horizontalSlider_absMoveLS.valueChanged.connect(lambda x: self.lineedit_move_event(self.horizontalSlider_absMoveLS.value(), self.lineedit_absMoveLS))
+
+
 
         self.pushButton_relMoveY.clicked.connect(lambda x: self.pushButton_move_event("y", isAbsolute=False))
         self.pushButton_relMoveZ.clicked.connect(lambda x: self.pushButton_move_event("z", isAbsolute=False))
@@ -56,6 +97,30 @@ class RobotControlWidget(QWidget):
         self.pushButton_absMoveY.clicked.connect(lambda x: self.pushButton_move_event("y", isAbsolute=True))
         self.pushButton_absMoveZ.clicked.connect(lambda x: self.pushButton_move_event("z", isAbsolute=True))
         self.pushButton_absMoveLS.clicked.connect(lambda x: self.pushButton_move_event("linear_stage", isAbsolute=True))
+
+        self.pushButton_abort.clicked.connect(lambda x: self.pushButton_srv_event("/stage/abort"))
+
+    def axis_position_callback(self, msg, axisName):
+        if (axisName=="y"):
+            self.lcdNumber_Y.display(msg.data)
+        if (axisName=="z"):
+            self.lcdNumber_Z.display(msg.data)
+        if (axisName=="linear_stage"):
+            self.lcdNumber_LS.display(msg.data)
+
+    def axis_state_callback(self, msg, axisName):
+        if (axisName=="y"):
+            self.label_stateY.setText("ON" if msg.data else "OFF")
+            self.label_stateY.setStyleSheet("background-color: green; border: 1px solid black;" if msg.data else "background-color: red; border: 1px solid black;")
+        if (axisName=="z"):
+            self.label_stateZ.setText("ON" if msg.data else "OFF")
+            self.label_stateZ.setStyleSheet("background-color: green; border: 1px solid black;" if msg.data else "background-color: red; border: 1px solid black;")
+        if (axisName=="linear_stage"):
+            self.label_stateLS.setText("ON" if msg.data else "OFF")
+            self.label_stateLS.setStyleSheet("background-color: green; border: 1px solid black;" if msg.data else "background-color: red; border: 1px solid black;")
+
+    def lineedit_move_event(self, value, lineEdit):
+        lineEdit.setText(str(value))
 
     def pushButton_srv_event(self, srvName):
         current_services = dict(self._node.get_service_names_and_types())
@@ -103,20 +168,20 @@ class RobotControlWidget(QWidget):
         
         if (axisName=="y"):
             if (isAbsolute):
-                slider=self.horizontalSlider_absMoveY
+                lineEdit=self.lineedit_absMoveY
             else:
-                slider=self.horizontalSlider_relMoveY
+                lineEdit=self.lineedit_relMoveY
         elif (axisName=="z"):
             if (isAbsolute):
-                slider=self.horizontalSlider_absMoveZ
+                lineEdit=self.lineedit_absMoveZ
             else:
-                slider=self.horizontalSlider_relMoveZ
+                lineEdit=self.lineedit_relMoveZ
         elif (axisName=="linear_stage"):
             if (isAbsolute):
-                slider=self.horizontalSlider_absMoveLS
+                lineEdit=self.lineedit_absMoveLS
             else:
-                slider=self.horizontalSlider_relMoveLS
+                lineEdit=self.lineedit_relMoveLS
         
         
-        msg.data = float(slider.value())
+        msg.data = float(lineEdit.text())
         pub.publish(msg)
